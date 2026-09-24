@@ -1,0 +1,9 @@
+# Executable problem contract
+
+Source JSON: `{"numbers": [a_0,...,a_{n-1}]}` with `n >= 1` and every `a_i` a positive integer. All integers use JSON decimal notation; their bit length is the complexity measure. A source output is either `"NO-SOLUTION"` or a list of distinct zero-based item indices whose weights sum to half the total. The empty list is allowed only if it meets that equation; for this positive domain it cannot. Different index lists are distinct witnesses.
+
+Target JSON: `{"tasks": [{"p": p, "d": d, "compiler": c}, ...], "setups": {c: s, ...}}`. The task list is nonempty; `p,d` are positive integers, compiler names are strings present in `setups`, and `s` is a nonnegative integer. A target output is either `"NO-SOLUTION"` or a permutation of all task indices. Tasks execute without idle time in that order. The first task incurs no setup. Before each later task, add the setup time of its compiler iff it differs from the preceding compiler. Each cumulative completion time must be at most that task's deadline. The no-idle interpretation loses no feasible schedules because deleting idle time can only improve deadlines. `"NO-SOLUTION"` is valid exactly when no feasible permutation exists.
+
+`algorithm.py` reads a source JSON object on stdin and writes a target JSON object on stdout. `python3 algorithm.py --extract` reads `{"source": source, "target_solution": output}` and writes a source output. Each invocation is a fresh process; errors exit nonzero and diagnostics go to stderr.
+
+The independent checker's source and target solvers are test oracles, never part of F or G. The target solver uses one permutation variable per position, pairwise distinctness, a cumulative completion recurrence, and deadline constraints. Its SAT models give feasible schedules; UNSAT conclusively justifies `"NO-SOLUTION"`. Exact Python validation of each schedule separately checks the returned model.
