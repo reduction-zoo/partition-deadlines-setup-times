@@ -18,8 +18,8 @@ Capability probe (2026-09-24 UTC):
 | External writing skill | `sci-brain:how-to-technical-writing`, local 0.5.0 plugin | available |
 
 Prepare complete: [contract](work/contract.md), [100-case corpus](work/cases.json), [checker](work/check.py), [evidence](work/preparation.md). Self-test passed on 2026-09-24 UTC.
-Current claim: executable F/G and a general proof candidate in [work](work/proof.md); 100 prepared and 84 additional source instances pass closed-loop checks. Independent review and paper remain.
-Next action: registered independent review of round 001, then manuscript if advanced.
+Current claim: executable F/G and a general proof candidate in [work](work/proof.md); 100 prepared and 86 additional source instances pass closed-loop checks. Initial independent review requested a large-integer CLI repair, now implemented and rechecked. Focused re-review and paper remain.
+Next action: focused independent re-review of the large-integer repair, then manuscript if advanced.
 
 | Round | Mechanism / scope | First check | Outcome | Evidence |
 |---|---|---|---|---|

@@ -55,6 +55,8 @@ def main(path):
     inputs = [(a,) for a in range(1, 5)]
     inputs += list(itertools.product(range(1, 5), repeat=2))
     inputs += list(itertools.product(range(1, 5), repeat=3))
+    large = int("1" + "0" * 4300)
+    inputs += [(large, large), (large, large + 1)]
     counts = {"instances": 0, "outputs": 0, "yes": 0, "no": 0, "alternate": 0}
     for numbers in inputs:
         source = {"numbers": list(numbers)}
@@ -73,6 +75,7 @@ def main(path):
 
 
 if __name__ == "__main__":
+    sys.set_int_max_str_digits(0)
     parser = argparse.ArgumentParser()
     parser.add_argument("--candidate", type=Path, required=True)
     main(parser.parse_args().candidate)

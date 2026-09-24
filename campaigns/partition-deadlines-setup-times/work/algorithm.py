@@ -33,6 +33,7 @@ def extract(source, answer):
 
 
 if __name__ == "__main__":
+    sys.set_int_max_str_digits(0)
     try:
         request = json.load(sys.stdin)
         result = extract(request["source"], request["target_solution"]) if sys.argv[1:] == ["--extract"] else forward(request)
