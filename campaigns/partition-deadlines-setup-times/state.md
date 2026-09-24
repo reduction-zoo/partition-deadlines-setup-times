@@ -1,6 +1,6 @@
 # Campaign state
 
-Budget: 20 rounds. Used: 0.
+Budget: 20 rounds. Used: 1 (round 001 closed).
 Board source: d56f22aee71c281b1a9b7aa90e65a0d2607efdce.
 
 Capability probe (2026-09-24 UTC):
@@ -18,7 +18,9 @@ Capability probe (2026-09-24 UTC):
 | External writing skill | `sci-brain:how-to-technical-writing`, local 0.5.0 plugin | available |
 
 Prepare complete: [contract](work/contract.md), [100-case corpus](work/cases.json), [checker](work/check.py), [evidence](work/preparation.md). Self-test passed on 2026-09-24 UTC.
-Next action: start round 001 with an explicit construction hypothesis and first discriminating check.
+Current claim: executable F/G and a general proof candidate in [work](work/proof.md); 100 prepared and 84 additional source instances pass closed-loop checks. Independent review and paper remain.
+Next action: registered independent review of round 001, then manuscript if advanced.
 
 | Round | Mechanism / scope | First check | Outcome | Evidence |
 |---|---|---|---|---|
+| 001 | Early/late two-task compiler classes with separator | Prepared 100-case closed loop | supported | [round](rounds/001/round.md) |

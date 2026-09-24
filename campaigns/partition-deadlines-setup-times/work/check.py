@@ -76,7 +76,7 @@ def valid_schedule(target, order):
     return True
 
 
-def target_witnesses(target, limit=2):
+def z3_target_witnesses(target, limit=2):
     validate_target(target)
     tasks, setups = target["tasks"], target["setups"]
     n = len(tasks)
@@ -114,6 +114,49 @@ def target_witnesses(target, limit=2):
     return answers
 
 
+def target_witnesses(target, limit=2):
+    """Exact earliest-arrival subset DP; repeat with first order forbidden."""
+    validate_target(target)
+    tasks, setups = target["tasks"], target["setups"]
+    n = len(tasks)
+    full = (1 << n) - 1
+
+    def find(forbidden=None):
+        stack = [(0, -1, 0, (), True)]
+        best = {}
+        while stack:
+            mask, last, clock, path, matching = stack.pop()
+            if mask == full:
+                if forbidden is None or not matching:
+                    return list(path)
+                continue
+            key = (mask, last, matching if forbidden is not None else False)
+            if clock >= best.get(key, float("inf")):
+                continue
+            best[key] = clock
+            for i, task in enumerate(tasks):
+                if mask >> i & 1:
+                    continue
+                setup = setups[task["compiler"]] if last >= 0 and task["compiler"] != tasks[last]["compiler"] else 0
+                finish = clock + setup + task["p"]
+                if finish <= task["d"]:
+                    same = matching and (forbidden is None or i == forbidden[len(path)])
+                    stack.append((mask | 1 << i, i, finish, path + (i,), same))
+        return None
+
+    first = find()
+    if first is None:
+        return []
+    assert valid_schedule(target, first)
+    answers = [first]
+    if limit > 1:
+        second = find(first)
+        if second is not None:
+            assert valid_schedule(target, second) and second != first
+            answers.append(second)
+    return answers
+
+
 def run_candidate(path, payload, extract=False):
     command = [sys.executable, str(path)] + (["--extract"] if extract else [])
     completed = subprocess.run(command, input=json.dumps(payload), text=True, capture_output=True, check=True)
@@ -144,6 +187,7 @@ def self_test():
     # Hand-checkable target schedules: setup is charged on entry, never initially.
     target = {"tasks": [{"p": 2, "d": 2, "compiler": "a"}, {"p": 1, "d": 5, "compiler": "b"}], "setups": {"a": 4, "b": 2}}
     assert target_witnesses(target) == [[0, 1]]
+    assert z3_target_witnesses(target) == [[0, 1]]
     assert not valid_schedule(target, [1, 0])
     assert not target_witnesses({"tasks": [{"p": 2, "d": 1, "compiler": "a"}], "setups": {"a": 0}})
     assert not valid_schedule(target, [[0], 1])
@@ -154,6 +198,7 @@ def self_test():
                  "setups": {"a": rng.randint(0, 3), "b": rng.randint(0, 3)}}
         exhaustive = any(valid_schedule(small, list(order)) for order in itertools.permutations(range(4)))
         assert bool(target_witnesses(small, 1)) == exhaustive
+        assert bool(z3_target_witnesses(small, 1)) == exhaustive
     print(f"self-test passed: {len(cases)} cases; YES={yes}, NO={no}, multiple={multiple}")
 
 
